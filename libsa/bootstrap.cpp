@@ -499,15 +499,16 @@ finish:
 
 /*********************************************************************
 *********************************************************************/
-#define COM_APPLE  "com.apple."
+#define COM_APPLE       "com.apple."
+#define ORG_PUREDARWIN  "org.puredarwin."
 
 void
 KLDBootstrap::loadSecurityExtensions(void)
 {
 	OSSharedPtr<OSDictionary>         extensionsDict;
 	OSSharedPtr<OSCollectionIterator> keyIterator;
-	OSString             * bundleID       = NULL;// don't release
-	OSKext               * theKext        = NULL;// don't release
+	OSString             * bundleID       = NULL; // don't release
+	OSKext               * theKext        = NULL; // don't release
 
 	OSKextLog(/* kext */ NULL,
 	    kOSKextLogStepLevel |
@@ -531,10 +532,11 @@ KLDBootstrap::loadSecurityExtensions(void)
 	while ((bundleID = OSDynamicCast(OSString, keyIterator->getNextObject()))) {
 		const char * bundle_id = bundleID->getCStringNoCopy();
 
-		/* Skip extensions whose bundle IDs don't start with "com.apple.".
+		/* Skip extensions whose bundle IDs don't start with "com.apple." or "org.puredarwin.".
 		 */
 		if (!bundle_id ||
-		    (strncmp(bundle_id, COM_APPLE, CONST_STRLEN(COM_APPLE)) != 0)) {
+		    (strncmp(bundle_id, COM_APPLE, CONST_STRLEN(COM_APPLE)) != 0 &&
+		     strncmp(bundle_id, ORG_PUREDARWIN, CONST_STRLEN(ORG_PUREDARWIN)) != 0)) {
 			continue;
 		}
 
