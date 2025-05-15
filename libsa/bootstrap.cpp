@@ -546,10 +546,20 @@ KLDBootstrap::loadSecurityExtensions(void)
 		}
 
 		if (kOSBooleanTrue == theKext->getPropertyForHostArch(kAppleSecurityExtensionKey)) {
-			OSKextLog(/* kext */ NULL,
-			    kOSKextLogStepLevel |
-			    kOSKextLogLoadFlag,
-			    "Loading security extension %s.", bundleID->getCStringNoCopy());
+			
+			// Differentiated logging for easier debugging
+			if (strncmp(bundle_id, COM_APPLE, CONST_STRLEN(COM_APPLE)) == 0) {
+				OSKextLog(/* kext */ NULL,
+				    kOSKextLogStepLevel |
+				    kOSKextLogLoadFlag,
+				    "Loading Apple security extension %s.", bundleID->getCStringNoCopy());
+			} else if (strncmp(bundle_id, ORG_PUREDARWIN, CONST_STRLEN(ORG_PUREDARWIN)) == 0) {
+				OSKextLog(/* kext */ NULL,
+				    kOSKextLogStepLevel |
+				    kOSKextLogLoadFlag,
+				    "Loading PureDarwin security extension %s.", bundleID->getCStringNoCopy());
+			}
+
 			OSKext::loadKextWithIdentifier(bundleID->getCStringNoCopy(),
 			    /* allowDefer */ false);
 		}
